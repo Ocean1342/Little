@@ -22,11 +22,11 @@ class RedirectController extends BaseController
     public function __invoke(string $shortLink)
     {
         $baseLink = $this->service->getBaseLink(htmlspecialchars($shortLink));
-        if (! $baseLink){
+        if (!$baseLink) {
             $content = $this->twig->render('home.twig', [
-                'message' => 'Your short link not found. Create it!',
+                'message' => $this->service->errorMessageToUser,
             ]);
-            return new Response($content,404);
+            return new Response($content, 404);
         }
         return new RedirectResponse($baseLink);
     }

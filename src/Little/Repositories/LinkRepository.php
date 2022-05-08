@@ -25,9 +25,10 @@ class LinkRepository implements LinkRepositoryInterface
         $stmt = $this->pdo->prepare(
             "SELECT base_link FROM links where short_link=:short_link"
         );
-        $stmt->bindValue(':short_link',$shortLink);
+        $stmt->bindValue(':short_link', $shortLink);
         $bool = $stmt->execute();
-        if(! $res = $stmt->fetch())
+
+        if (!$res = $stmt->fetch())
             return null;
         return $res[0];
     }
@@ -40,8 +41,8 @@ class LinkRepository implements LinkRepositoryInterface
     {
         $stmt = $this->pdo->prepare('INSERT INTO links (base_link,short_link)
         VALUES (:base_link, :short_link)');
-        $stmt->bindValue(':base_link',$arData['baseLink']);
-        $stmt->bindValue(':short_link',$arData['shortLink']);
+        $stmt->bindValue(':base_link', $arData['baseLink']);
+        $stmt->bindValue(':short_link', $arData['shortLink']);
         $res = $stmt->execute();
         return $res;
     }
