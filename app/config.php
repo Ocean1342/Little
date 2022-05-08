@@ -10,13 +10,14 @@ use function DI\create;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
-$createPdo = function ()
-{
+$dbConnection = require __DIR__ . '/../app/db.config.php';
+
+$createPdo = function ($dbConnection) {
     return create(PDO::class)
         ->constructor(
-            'mysql:host=mysql;dbname=little',
-            'root',
-            'root'
+            $dbConnection['production']['dsn'],
+            $dbConnection['production']['user'],
+            $dbConnection['production']['password']
         );
 };
 
@@ -26,9 +27,9 @@ return [
     },
     LinkServiceInterface::class => create(LinkService::class)
         ->constructor(create(LinkRepository::class)
-            ->constructor($createPdo())),
+            ->constructor($createPdo($dbConnection))),
     LinkRepositoryInterface::class => create(LinkRepository::class)
-        ->constructor($createPdo()),
+        ->constructor($createPdo($dbConnection)),
 
     Environment::class => function () {
         $loader = new FilesystemLoader(__DIR__ . '/../src/Little/Views');

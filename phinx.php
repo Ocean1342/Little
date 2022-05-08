@@ -1,5 +1,7 @@
 <?php
 
+$dbConnection = require __DIR__ . '/app/db.config.php';
+
 return
 [
     'paths' => [
@@ -11,23 +13,14 @@ return
         'default_environment' => 'development',
         'production' => [
             'adapter' => 'mysql',
-            'host' => 'mysql',
-            'name' => 'little2',
-            'user' => 'root',
-            'pass' => 'root',
+            'host' => $dbConnection['production']['host'],
+            'name' => $dbConnection['production']['dbname'],
+            'user' => $dbConnection['production']['user'],
+            'pass' => $dbConnection['production']['password'],
             'port' => '3306',
             'charset' => 'utf8',
-        ],
-        'development' => [
-            'adapter' => 'mysql',
-            'host' => 'localhost',
-            'name' => 'development_db',
-            'user' => 'root',
-            'pass' => '',
-            'port' => '3306',
-            'charset' => 'utf8',
-        ],
-        'testing' => [
+        ]
+/*        'testing' => [
             'adapter' => 'mysql',
             'host' => 'localhost',
             'name' => 'testing_db',
@@ -35,7 +28,7 @@ return
             'pass' => '',
             'port' => '3306',
             'charset' => 'utf8',
-        ]
+        ]*/
     ],
     'version_order' => 'creation'
 ];

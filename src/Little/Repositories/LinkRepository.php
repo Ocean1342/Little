@@ -14,6 +14,7 @@ class LinkRepository implements LinkRepositoryInterface
      */
     public function __construct(public PDO $pdo)
     {
+        var_dump($this->pdo);
     }
 
     /**
