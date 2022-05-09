@@ -1,8 +1,12 @@
 <?php
-ini_set('display_errors', '1');
 
 use FastRoute\RouteCollector;
 use Symfony\Component\HttpFoundation\Response;
+
+const DEBUG_MODE = true;
+
+if (DEBUG_MODE)
+    ini_set('display_errors', '1');
 
 
 $container = require __DIR__ . '/../app/bootstrap.php';

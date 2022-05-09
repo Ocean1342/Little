@@ -41,8 +41,8 @@ class LinkService implements LinkServiceInterface
         try {
             $res = $this->repository->getBaseLink($shortLink);
         } catch (PDOException $exception) {
-            //логировать
-            //echo $exception->getMessage();
+            if (DEBUG_MODE)
+                echo $exception->getMessage();
             $this->errorMessageToUser = static::DATABASE_ERROR_MESSAGE;
             return null;
         }
@@ -95,8 +95,8 @@ class LinkService implements LinkServiceInterface
             //save short link
             $this->repository->saveShortLink($arData);
         } catch (PDOException $exception) {
-            //логировать
-            //echo $exception->getMessage();
+            if (DEBUG_MODE)
+                echo $exception->getMessage();
             $this->errorMessageToUser = static::DATABASE_ERROR_MESSAGE;
             return null;
         }
