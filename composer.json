@@ -21,7 +21,8 @@
     "twig/twig": "^3.2",
     "symfony/http-foundation": "6.0.x-dev",
     "ext-pdo": "*",
-    "robmorgan/phinx": "dev-master"
+    "robmorgan/phinx": "dev-master",
+    "monolog/monolog": "2.x-dev"
   },
   "scripts": {
     "serve": "@php -S localhost:8000 -t public/",

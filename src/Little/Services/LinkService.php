@@ -3,9 +3,11 @@
 namespace Little\Services;
 
 
+use Exception;
 use Little\Repositories\LinkRepositoryInterface;
 
 use PDOException;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -25,8 +27,12 @@ class LinkService implements LinkServiceInterface
 
     /**
      * @param LinkRepositoryInterface $repository
+     * @param LoggerInterface $logger
      */
-    public function __construct(public LinkRepositoryInterface $repository)
+    public function __construct(
+        public LinkRepositoryInterface $repository,
+        public LoggerInterface         $logger
+    )
     {
     }
 
@@ -43,6 +49,7 @@ class LinkService implements LinkServiceInterface
         } catch (PDOException $exception) {
             if (DEBUG_MODE)
                 echo $exception->getMessage();
+            $this->logException($exception);
             $this->errorMessageToUser = static::DATABASE_ERROR_MESSAGE;
             return null;
         }
@@ -52,6 +59,23 @@ class LinkService implements LinkServiceInterface
         return $res;
     }
 
+
+    /**
+     * @param Exception $exception
+     * @param string|null $message
+     * @return void
+     */
+    protected function logException(Exception $exception, string $message = null): void
+    {
+        $message = $message ?? 'An error occurred';
+        $this->logger->error($message,
+            [
+                'message'=>$exception->getMessage(),
+                'file' => $exception->getFile(),
+                'line' => $exception->getLine(),
+            ]
+        );
+    }
 
     /**
      * @return string
@@ -97,6 +121,7 @@ class LinkService implements LinkServiceInterface
         } catch (PDOException $exception) {
             if (DEBUG_MODE)
                 echo $exception->getMessage();
+            $this->logException($exception);
             $this->errorMessageToUser = static::DATABASE_ERROR_MESSAGE;
             return null;
         }

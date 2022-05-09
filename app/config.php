@@ -5,7 +5,13 @@ use Little\Repositories\LinkRepository;
 use Little\Repositories\LinkRepositoryInterface;
 use Little\Services\LinkService;
 use Little\Services\LinkServiceInterface;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
+use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 use Symfony\Component\HttpFoundation\Request;
+use function DI\autowire;
 use function DI\create;
 use function DI\get;
 use Twig\Environment;
@@ -13,7 +19,24 @@ use Twig\Loader\FilesystemLoader;
 
 $dbConnection = require __DIR__ . '/../app/db.config.php';
 
-$createPdo = function ($dbConnection, $value = false) {
+
+/**
+ * @return Logger
+ */
+$createLogger = function () {
+    // create a log channel
+    $log = new Logger('log');
+    $log->pushHandler(new StreamHandler(__DIR__ . '/../logs/log.log'));
+    return $log;
+};
+
+/**
+ * @param $dbConnection
+ * @param $logger
+ * @return PDO|void
+ */
+$createPdo = function ($dbConnection, $logger) {
+
     try {
         $pdo = new PDO(
             $dbConnection['production']['dsn'],
@@ -21,8 +44,16 @@ $createPdo = function ($dbConnection, $value = false) {
             $dbConnection['production']['password'],
         );
     } catch (PDOException $exception) {
-    if(DEBUG_MODE)
-        echo $exception->getMessage();
+        if (DEBUG_MODE)
+            echo $exception->getMessage(), PHP_EOL;
+
+        $logger->error(
+            $exception->getMessage(),
+            [
+                'file' => $exception->getFile(),
+                'line' => $exception->getLine()
+            ]
+        );
         die('Problem with service. Please try latter');
     }
 
@@ -33,10 +64,12 @@ return [
     Request::class => function () {
         return Request::createFromGlobals();
     },
-    PDO::class => $createPdo($dbConnection),
+    LoggerInterface::class => $createLogger(),
+    PDO::class => $createPdo($dbConnection, $createLogger()),
+
     LinkServiceInterface::class => create(LinkService::class)
         ->constructor(create(LinkRepository::class)
-            ->constructor(get(PDO::class))),
+            ->constructor(get(PDO::class)), get(LoggerInterface::class)),
 
     LinkRepositoryInterface::class => create(LinkRepository::class)
         ->constructor(get(PDO::class)),
@@ -44,5 +77,6 @@ return [
     Environment::class => function () {
         $loader = new FilesystemLoader(__DIR__ . '/../src/Little/Views');
         return new Environment($loader);
-    },
+    }
+
 ];
