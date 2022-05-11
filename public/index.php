@@ -1,13 +1,5 @@
 <?php
 
-
-
-
-//TODO: ничего не должно быть кроме инициализации dotenv
-// создания запроса получение ответа
-// нужно создать класс апп и в него всё переместить
-
-
 use Little\Application;
 use Symfony\Component\HttpFoundation\Request;
 
