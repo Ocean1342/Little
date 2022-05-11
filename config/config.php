@@ -1,8 +1,8 @@
 <?php
 
 
-use Little\Repositories\LinkRepository;
-use Little\Repositories\LinkRepositoryInterface;
+use Little\Repositories\PDOLinkRepository;
+use Little\Repositories\LinkRepositoryAbstract;
 use Little\Services\LinkService;
 use Little\Services\LinkServiceInterface;
 use Monolog\Handler\StreamHandler;
@@ -17,7 +17,7 @@ use function DI\get;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
-$dbConnection = require __DIR__ . '/../app/db.config.php';
+$dbConnection = require __DIR__ . '/../config/db.config.php';
 
 
 /**
@@ -44,9 +44,7 @@ $createPdo = function ($dbConnection, $logger) {
             $dbConnection['production']['password'],
         );
     } catch (PDOException $exception) {
-        if (DEBUG_MODE)
             echo $exception->getMessage(), PHP_EOL;
-
         $logger->error(
             $exception->getMessage(),
             [
@@ -68,10 +66,10 @@ return [
     PDO::class => $createPdo($dbConnection, $createLogger()),
 
     LinkServiceInterface::class => create(LinkService::class)
-        ->constructor(create(LinkRepository::class)
-            ->constructor(get(PDO::class)), get(LoggerInterface::class)),
+        ->constructor(create(PDOLinkRepository::class)
+            ->constructor(get(PDO::class))),
 
-    LinkRepositoryInterface::class => create(LinkRepository::class)
+    LinkRepositoryAbstract::class => create(PDOLinkRepository::class)
         ->constructor(get(PDO::class)),
 
     Environment::class => function () {

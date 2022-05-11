@@ -23,6 +23,7 @@ class HomeController extends BaseController
     public function __invoke(Request $request)
     {
         $content = $this->twig->render('home.twig');
+
         return new Response($content, 200);
     }
 }

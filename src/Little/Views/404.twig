@@ -1,0 +1,17 @@
+{% extends 'layout.twig' %}
+
+{% block content %}
+
+    <h1>Page not found</h1>
+    <div class="message" style="margin-bottom: 20px">
+
+
+        {% if message == false %}
+            <p>Page Not Found. Go <a href="/">homepage</a></p>
+        {% else %}
+            <p style=";padding: 5px;">{{message}}</p>
+        {% endif %}
+    </div>
+
+
+{% endblock %}

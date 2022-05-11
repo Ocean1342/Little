@@ -1,6 +1,6 @@
 <?php
 
-$dbConnection = require __DIR__ . '/app/db.config.php';
+$dbConnection = require __DIR__ . '/config/db.config.php';
 
 return
 [

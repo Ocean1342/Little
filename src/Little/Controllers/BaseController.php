@@ -2,7 +2,7 @@
 
 namespace Little\Controllers;
 
-use Little\Repositories\LinkRepositoryInterface;
+use Little\Repositories\LinkRepositoryAbstract;
 use Little\Services\LinkServiceInterface;
 use Twig\Environment;
 

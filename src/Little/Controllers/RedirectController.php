@@ -2,7 +2,7 @@
 
 namespace Little\Controllers;
 
-
+use Little\Repositories\Exceptions\NotFoundLinkException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -23,11 +23,9 @@ class RedirectController extends BaseController
     {
         $baseLink = $this->service->getBaseLink(htmlspecialchars($shortLink));
         if (!$baseLink) {
-            $content = $this->twig->render('home.twig', [
-                'message' => $this->service->errorMessageToUser,
-            ]);
-            return new Response($content, 404);
+            throw new NotFoundLinkException();
         }
+
         return new RedirectResponse($baseLink);
     }
 
