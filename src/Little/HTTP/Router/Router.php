@@ -17,16 +17,14 @@ class Router
      * @param string $pattern
      * @param $callable
      * @param string $method
-     * @param array $params
      * @return void
      */
-    public function registerRoute(string $pattern, $callable, array $params = [], string $method = "GET"): void
+    public function registerRoute(string $pattern, $callable,string $method = "GET"): void
     {
         $this->routes[] = [
             'pattern' => $pattern,
             'method' => $method,
             'callable' => $callable,
-            'params' => $params
         ];
     }
 
@@ -45,13 +43,6 @@ class Router
 
     public function dispatcher()
     {
-        /*
-         * Что может пойти не так:
-         * 1 - не существует такого класса
-         * 2 - роут не совпадает
-         * 3 - роут совпадает, но метод не совпадает
-         * 4 - роут совпадает, но метод не совпадает, но существует ещё следующий роут, в котором метод совпадает
-         * */
         $routeFound = false;
         $methodEqual = false;
         $dynamicPartRegex = '([^\/]+)';

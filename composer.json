@@ -4,6 +4,9 @@
   "type": "project",
   "license": "MIT",
   "autoload": {
+    "files": [
+      "src/Little/helpers.php"
+    ],
     "psr-4": {
       "Little\\": "src/Little"
     }
@@ -16,18 +19,12 @@
   "minimum-stability": "dev",
   "require": {
     "php": ">=8.0",
-    "php-di/php-di": "^6.0",
-    "nikic/fast-route": "~0.5.0",
-    "twig/twig": "^3.2",
-    "symfony/http-foundation": "6.0.x-dev",
     "ext-pdo": "*",
-    "robmorgan/phinx": "dev-master",
-    "monolog/monolog": "2.x-dev",
     "psr/http-message": "1.0.x-dev"
   },
   "scripts": {
     "serve": "@php -S localhost:8000 -t public/",
     "migrate": "@php migrate.php up",
-    "down-migrate": "@php vendor/bin/phinx rollback -e production"
+    "down-migrate": "@php migrate.php down"
   }
 }

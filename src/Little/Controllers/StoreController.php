@@ -25,7 +25,7 @@ class StoreController extends BaseController
     /**
      * @return Response
      */
-    public function __invoke(): Response
+    public function __invoke():? Response
     {
 
         $status = 200;
@@ -44,11 +44,10 @@ class StoreController extends BaseController
             $message = 'An error occurred. Please, try latter';
             $status = 500;
         }
-        $content = render_template('home.php', [
+        $content = renderTemplate('home.php', [
             'message' => $message,
         ]);
-        $ret = new Response($content, $status);
-        return $ret;
 
+        return new Response($content, $status);
     }
 }

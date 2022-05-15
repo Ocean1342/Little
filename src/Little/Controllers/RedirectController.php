@@ -10,8 +10,6 @@ use Little\Repositories\Exceptions\NotFoundLinkException;
  */
 class RedirectController extends BaseController
 {
-
-
     /**
      * @param string $shortLink
      * @return Response|null
@@ -19,7 +17,6 @@ class RedirectController extends BaseController
      */
     public function __invoke(string $shortLink):? Response
     {
-        dump($shortLink);
         $baseLink = $this->service->getBaseLink(htmlspecialchars($shortLink));
         if (!$baseLink) {
             throw new NotFoundLinkException('Short link Not Found');
