@@ -2,24 +2,21 @@
 
 namespace Little\Controllers;
 
-use Little\Repositories\LinkRepositoryAbstract;
-use Little\Services\LinkServiceInterface;
-use Twig\Environment;
+use Little\Services\LinkService;
 
 /**
  *
  */
 class BaseController
 {
+    protected LinkService $service;
+
     /**
-     * @param LinkServiceInterface $service
-     * @param Environment $twig
+     * @param LinkService $service
      */
-    public function __construct(
-        protected LinkServiceInterface $service,
-        protected Environment $twig
-    )
+    public function __construct()
     {
+        $this->service = new LinkService();
     }
 
 }

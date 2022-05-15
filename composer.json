@@ -22,11 +22,12 @@
     "symfony/http-foundation": "6.0.x-dev",
     "ext-pdo": "*",
     "robmorgan/phinx": "dev-master",
-    "monolog/monolog": "2.x-dev"
+    "monolog/monolog": "2.x-dev",
+    "psr/http-message": "1.0.x-dev"
   },
   "scripts": {
     "serve": "@php -S localhost:8000 -t public/",
-    "migrate": "@php vendor/bin/phinx migrate -e production",
+    "migrate": "@php migrate.php up",
     "down-migrate": "@php vendor/bin/phinx rollback -e production"
   }
 }

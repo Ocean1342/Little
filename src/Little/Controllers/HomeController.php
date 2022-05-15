@@ -2,9 +2,8 @@
 
 namespace Little\Controllers;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
+use Little\HTTP\Response;
 
 /**
  *
@@ -14,16 +13,12 @@ class HomeController extends BaseController
 
 
     /**
-     * @param Request $request
-     * @return Response
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
+     * @return Response|null
      */
-    public function __invoke(Request $request)
+    public function __invoke():? Response
     {
-        $content = $this->twig->render('home.twig');
+        $content = render_template('home.php');
 
-        return new Response($content, 200);
+        return new Response($content);
     }
 }

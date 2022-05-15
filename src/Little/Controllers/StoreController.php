@@ -5,7 +5,7 @@ namespace Little\Controllers;
 use InvalidArgumentException;
 use Little\Repositories\Exceptions\PDOLinkRepositoryException;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Little\HTTP\Response;
 
 /**
  *
@@ -23,22 +23,19 @@ class StoreController extends BaseController
     }
 
     /**
-     * @param Request $request
      * @return Response
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
      */
-    public function __invoke(Request $request): Response
+    public function __invoke(): Response
     {
+
         $status = 200;
         try {
-            $shortLink = $this->service->createShortLink($request);
+            $shortLink = $this->service->createShortLink($_POST['base_link']);
             $message = 'Success! Short Link: ' .
                 $this->prepareShortLinkToUser(
-                    $request->server->get('SERVER_NAME'),
+                    $_SERVER['SERVER_NAME'],
                     $shortLink,
-                    $request->server->get('REQUEST_SCHEME')
+                    $_SERVER['REQUEST_SCHEME']
                 );
         } catch (InvalidArgumentException $exception) {
             $message = $exception->getMessage();
@@ -47,11 +44,11 @@ class StoreController extends BaseController
             $message = 'An error occurred. Please, try latter';
             $status = 500;
         }
-        $content = $this->twig->render('home.twig', [
+        $content = render_template('home.php', [
             'message' => $message,
         ]);
-
-        return new Response($content, $status);
+        $ret = new Response($content, $status);
+        return $ret;
 
     }
 }
