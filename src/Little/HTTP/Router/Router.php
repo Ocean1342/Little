@@ -3,10 +3,10 @@
 namespace Little\HTTP\Router;
 
 use InvalidArgumentException;
-
 use Little\HTTP\RequestInterface;
 use Little\HTTP\Router\Exceptions\BadMethodException;
 use Little\HTTP\Router\Exceptions\RouteNotFoundException;
+use Little\HTTP\Router\Interfaces\RouteInterface;
 use Little\HTTP\Router\Interfaces\RouterInterface;
 
 
@@ -31,19 +31,19 @@ class Router implements RouterInterface
      * @param string $method
      * @return void
      */
-    public function registerRoute(string $path, $callable, string $method = "GET"): void
+    public function add(string $path, $callable, string $method = "GET"): void
     {
         $this->routes[] = new Route($path, $callable, $method);
     }
 
 
-    public function match()
+    public function match(): ?RouteInterface
     {
         $routeFound = false;
         $methodEqual = false;
 
         foreach ($this->routes as $route) {
-            // проверяем совпадание роута и запроса
+            // matching route and request uri
             if (preg_match($route->getPath(), $this->request->getRequestUri(), $matchesInUri)) {
                 $routeFound = true;
 
@@ -52,7 +52,7 @@ class Router implements RouterInterface
                 }
                 $methodEqual = true;
 
-                //проставить значения переменных из запроса
+                // add route vars to Route object
                 unset($matchesInUri[0]);
                 foreach ($matchesInUri as $k => $match) {
                     $route->setVarsValue(--$k, $match);
@@ -70,8 +70,7 @@ class Router implements RouterInterface
             throw new InvalidArgumentException("Not found class");
         }
 
-        $controller = new ($currentRoute->getCallable())($this->request);
-        return call_user_func_array($controller, $currentRoute->getArguments());
+        return $currentRoute;
     }
 
 }

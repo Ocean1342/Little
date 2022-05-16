@@ -13,9 +13,9 @@ class HomeController extends BaseController
     /**
      * @return Response|null
      */
-    public function __invoke():? Response
+    public function __invoke(): ?Response
     {
-        $content = renderTemplate('home.php');
+        $content = $this->view->render('home.php');
 
         return new Response($content);
     }

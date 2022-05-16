@@ -4,6 +4,7 @@
 
 - Git
 - PHP >= 8.0
+- MySQL >= 8.0.27
 - Composer
 
 ## Installation
@@ -20,18 +21,13 @@ Install via composer:
 composer install
 ```
 
-Configure database connection in app/db.config.php:
+Configure database connection in /config/config.php:
 
 ```
-
-$arDbConfig = [
-    'production' => [
-        'dbname' => 'your db name',
-        'host' => 'host',
-        'user' => 'user',
-        'password' => 'password'
-    ]
-];
+'dbname' => 'your db name',
+'host' => 'host',
+'user' => 'user',
+'password' => 'password'
 ```
 
 Run migrations:

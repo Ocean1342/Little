@@ -2,9 +2,6 @@
 
 namespace Little\HTTP;
 
-/**
- *
- */
 class Request implements RequestInterface
 {
 
@@ -15,10 +12,11 @@ class Request implements RequestInterface
      * @param $post
      */
     public function __construct(
-        protected string $requestUri='/',
+        protected string $requestUri = '/',
         protected string $requestMethod = "GET",
-        protected array $post = [])
+        protected array  $post = [])
     {
+        $this->extractPath();
     }
 
     /**
@@ -40,9 +38,9 @@ class Request implements RequestInterface
     /**
      * @return array
      */
-    public function getPost(): array
+    public function post(): array
     {
-            return $this->post;
+        return $this->post;
     }
 
     /**
@@ -59,5 +57,16 @@ class Request implements RequestInterface
     public function getServerName(): string
     {
         return $_SERVER['SERVER_NAME'] ?? 'localhost';
+    }
+
+    /**
+     * @return void
+     */
+    public function extractPath(): void
+    {
+        $ar = parse_url($this->getRequestUri());
+        if (array_key_exists('query', $ar)) {
+            $this->requestUri = $ar['path'];
+        }
     }
 }

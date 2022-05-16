@@ -44,7 +44,7 @@ class Response implements ResponseInterface
             return $this;
         }
         foreach ($this->headers as $key => $value) {
-            header($key.': '.$value);
+            header($key . ': ' . $value);
         }
         // status
         http_response_code($this->status);

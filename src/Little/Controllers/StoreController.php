@@ -28,7 +28,7 @@ class StoreController extends BaseController
 
         $status = 200;
         try {
-            $shortLink = $this->service->createShortLink($this->request->getPost()['base_link']);
+            $shortLink = $this->service->createShortLink($this->request->post()['base_link']);
             $message = 'Success! Short Link: ' .
                 $this->prepareShortLinkToUser(
                     $shortLink,
@@ -42,7 +42,7 @@ class StoreController extends BaseController
             $message = 'An error occurred. Please, try latter';
             $status = 500;
         }
-        $content = renderTemplate('home.php', [
+        $content = $this->view->render('home.php', [
             'message' => $message,
         ]);
 

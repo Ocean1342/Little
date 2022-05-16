@@ -8,23 +8,16 @@ use Little\Repositories\Exceptions\PDOLinkRepositoryException;
 use PDO;
 use PDOException;
 
-/**
- *
- */
 class PDOLinkRepository extends LinkRepositoryAbstract
 {
-    protected PDO $pdo;
+
     /**
      *
      */
-    public function __construct()
+    public function __construct(
+        protected PDO $pdo
+    )
     {
-        $dbConnection = require $_SERVER['DOCUMENT_ROOT'] . '/../config/db.config.php';
-        $this->pdo = new PDO(
-            $dbConnection['production']['dsn'],
-            $dbConnection['production']['user'],
-            $dbConnection['production']['password']
-        );
     }
 
     /**

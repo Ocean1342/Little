@@ -15,7 +15,7 @@ class RedirectController extends BaseController
      * @return Response|null
      * @throws NotFoundLinkException
      */
-    public function __invoke(string $shortLink):? Response
+    public function __invoke(string $shortLink): ?Response
     {
         $baseLink = $this->service->getBaseLink($shortLink);
         if (!$baseLink) {

@@ -2,10 +2,6 @@
 
 namespace Little\HTTP;
 
-
-/**
- *
- */
 interface RequestInterface
 {
     /**

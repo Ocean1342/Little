@@ -1,4 +1,8 @@
 <?php
+/**
+ * @param $var
+ * @return void
+ */
 function dd($var)
 {
     echo '<pre>';
@@ -7,6 +11,10 @@ function dd($var)
     die();
 }
 
+/**
+ * @param $var
+ * @return void
+ */
 function dump($var)
 {
     echo '<pre>';
@@ -15,16 +23,3 @@ function dump($var)
 
 }
 
-function renderTemplate($path, array $args = [])
-{
-    $fullPath = $_SERVER['DOCUMENT_ROOT'] . '/../src/Little/Views/' . $path;
-    if (!is_file($fullPath)) {
-        throw new InvalidArgumentException('Not found view');
-    }
-    extract($args);
-    ob_start();
-    require $fullPath;
-    $html = ob_get_clean();
-
-    return $html;
-}

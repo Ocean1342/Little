@@ -2,9 +2,6 @@
 
 namespace Little\Repositories;
 
-/**
- *
- */
 interface SaveLinkInterface
 {
     /**

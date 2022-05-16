@@ -6,7 +6,7 @@ require 'header.php';
     <div class="message" style="margin-bottom: 20px">
 
         <?php if (isset($message) && $message != ''): ?>
-            <p style=";padding: 5px;"><?= $message ?></p>
+            <p style=";padding: 5px;"><?= htmlspecialchars($message) ?></p>
         <?php else: ?>
             <p>Enter your link:</p>
         <?php endif; ?>

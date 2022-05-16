@@ -4,14 +4,18 @@ namespace Little\HTTP;
 
 interface ResponseInterface
 {
+    /**
+     * @return $this
+     */
     public function send(): static;
 
     /**
-     * Sends content for the current web response.
-     *
      * @return $this
      */
     public function sendContent(): static;
 
+    /**
+     * @return $this
+     */
     public function sendHeaders(): static;
 }

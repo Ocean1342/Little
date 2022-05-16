@@ -88,24 +88,44 @@ class Route implements RouteInterface
     protected function prepareRoutePath(): void
     {
         if (preg_match_all('/{' . $this->dynamicPartRegex . '}/i', $this->path, $matches)) {
-            //Подготовить новый паттерн
+            //Prepare regex
             unset($matches[0]);
             $newRegexPattern = preg_replace('/{(.*)}/i', '', $this->path);
             $regex = '/^' . str_replace('/', '\/', $newRegexPattern);
 
-            foreach ($matches[1] as $k => $match) {
-                $this->varNames[] = $match;
-                $regex .= $this->dynamicPartRegex;
-                if ($k == (count($matches[1]) - 1)) {
-                    $regex .= '$/i';
-                } else {
-                    $regex .= '\/';
-                }
-            }
+            $regex = $this->getRegex($matches[1], $regex);
         } else {
             $regex = '/^' . str_replace('/', '\/', $this->path) . '$/i';
         }
         $this->path = $regex;
+    }
+
+    /**
+     * @param $matches
+     * @param string $regex
+     * @return string
+     */
+    public function getRegex($matches, string $regex): string
+    {
+        foreach ($matches as $k => $match) {
+            $this->setVarName($match);
+            $regex .= $this->dynamicPartRegex;
+            if ($k == (count($matches) - 1)) {
+                $regex .= '$/i';
+            } else {
+                $regex .= '\/';
+            }
+        }
+        return $regex;
+    }
+
+    /**
+     * @param $match
+     * @return void
+     */
+    public function setVarName($match): void
+    {
+        $this->varNames[] = $match;
     }
 
 }

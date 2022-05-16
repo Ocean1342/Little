@@ -3,20 +3,17 @@
 namespace Little\Services;
 
 use Little\Repositories\LinkRepositoryAbstract;
-use Little\Repositories\PDOLinkRepository;
 use Symfony\Component\HttpFoundation\Request;
 
 class LinkService implements LinkServiceInterface
 {
-    protected PDOLinkRepository $repository;
-
     /**
      *
      */
     public function __construct(
+        protected LinkRepositoryAbstract $repository
     )
     {
-        $this->repository = new PDOLinkRepository();
     }
 
     /**
@@ -25,7 +22,7 @@ class LinkService implements LinkServiceInterface
     protected function generateShortLink(): string
     {
         $symbols = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        return substr(str_shuffle($symbols), rand(1,5), 6);
+        return substr(str_shuffle($symbols), rand(1, 5), 6);
     }
 
     /**
@@ -44,8 +41,6 @@ class LinkService implements LinkServiceInterface
      */
     public function createShortLink($baseLink): ?string
     {
-        $baseLink = htmlspecialchars($baseLink);
-
         //create short link
         $shortLink = $this->generateShortLink();
         $this->repository->saveShortLink($shortLink, $baseLink);
