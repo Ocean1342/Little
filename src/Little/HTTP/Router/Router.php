@@ -3,76 +3,51 @@
 namespace Little\HTTP\Router;
 
 use InvalidArgumentException;
+
+use Little\HTTP\RequestInterface;
 use Little\HTTP\Router\Exceptions\BadMethodException;
 use Little\HTTP\Router\Exceptions\RouteNotFoundException;
+use Little\HTTP\Router\Interfaces\RouterInterface;
 
-class Router
+
+class Router implements RouterInterface
 {
     /**
-     * @var array
+     * @var array Route
      */
     protected array $routes;
 
+
     /**
-     * @param string $pattern
+     * @param RequestInterface $request
+     */
+    public function __construct(protected RequestInterface $request)
+    {
+    }
+
+    /**
+     * @param string $path
      * @param $callable
      * @param string $method
      * @return void
      */
-    public function registerRoute(string $pattern, $callable,string $method = "GET"): void
+    public function registerRoute(string $path, $callable, string $method = "GET"): void
     {
-        $this->routes[] = [
-            'pattern' => $pattern,
-            'method' => $method,
-            'callable' => $callable,
-        ];
+        $this->routes[] = new Route($path, $callable, $method);
     }
 
-    protected function prepareRouteRegex(string $pattern): string
-    {
-        if (preg_match('/{(.*)}/i', $pattern, $matches)) {
-            echo 'match';
-            dump($matches);
-            $regex = '/' . str_replace('/', '\/', $pattern) . '$/i';
-        } else {
-            $regex = '/' . str_replace('/', '\/', $pattern) . '$/i';
-        }
-        dump($regex);
-        return $regex;
-    }
 
-    public function dispatcher()
+    public function match()
     {
         $routeFound = false;
         $methodEqual = false;
-        $dynamicPartRegex = '([^\/]+)';
-        $varsNames = $vars = [];
 
         foreach ($this->routes as $route) {
-
-            //определяем динамический роут или нет
-            if (preg_match_all('/\{' . $dynamicPartRegex . '\}/i', $route['pattern'], $matches)) {
-                //Подготовить новый паттерн
-                unset($matches[0]);
-                $newRegexPattern = preg_replace('/{(.*)}/i', '', $route['pattern']);
-                $regex = '/^' . str_replace('/', '\/', $newRegexPattern);
-                $varsNames = [];
-                foreach ($matches[1] as $k => $match) {
-                    $varsNames[] = $match;
-                    $regex .= $dynamicPartRegex;
-                    if ($k == (count($matches[1]) - 1)) {
-                        $regex .= '$/i';
-                    } else {
-                        $regex .= '\/';
-                    }
-                }
-            } else {
-                $regex = '/^' . str_replace('/', '\/', $route['pattern']) . '$/i';
-            }
             // проверяем совпадание роута и запроса
-            if (preg_match($regex, $_SERVER['REQUEST_URI'], $matchesInUri)) {
+            if (preg_match($route->getPath(), $this->request->getRequestUri(), $matchesInUri)) {
                 $routeFound = true;
-                if ($_SERVER['REQUEST_METHOD'] !== $route['method']) {
+
+                if ($this->request->getMethod() !== $route->getMethod()) {
                     continue;
                 }
                 $methodEqual = true;
@@ -80,7 +55,7 @@ class Router
                 //проставить значения переменных из запроса
                 unset($matchesInUri[0]);
                 foreach ($matchesInUri as $k => $match) {
-                    $vars[$varsNames[--$k]] = htmlspecialchars($match);
+                    $route->setVarsValue(--$k, $match);
                 }
                 $currentRoute = $route;
             }
@@ -91,12 +66,12 @@ class Router
         if (!$methodEqual) {
             throw new BadMethodException('Method in route not equal');
         }
-        if (!class_exists($currentRoute['callable'])) {
+        if (!class_exists($currentRoute->getCallable())) {
             throw new InvalidArgumentException("Not found class");
         }
 
-        $controller = new $currentRoute['callable'];
-        return call_user_func_array($controller, $vars);
+        $controller = new ($currentRoute->getCallable())($this->request);
+        return call_user_func_array($controller, $currentRoute->getArguments());
     }
 
 }

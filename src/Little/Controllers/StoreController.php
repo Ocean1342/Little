@@ -4,7 +4,6 @@ namespace Little\Controllers;
 
 use InvalidArgumentException;
 use Little\Repositories\Exceptions\PDOLinkRepositoryException;
-use Symfony\Component\HttpFoundation\Request;
 use Little\HTTP\Response;
 
 /**
@@ -13,11 +12,10 @@ use Little\HTTP\Response;
 class StoreController extends BaseController
 {
     /**
-     * @param Request $request
      * @param string $shortLink
      * @return string
      */
-    protected function prepareShortLinkToUser(string $serverName, string $shortLink, string $scheme = 'http'): string
+    protected function prepareShortLinkToUser(string $shortLink, string $serverName = 'localhost', string $scheme = 'http'): string
     {
         return $scheme . '://' . $serverName . '/' . $shortLink;
     }
@@ -25,17 +23,17 @@ class StoreController extends BaseController
     /**
      * @return Response
      */
-    public function __invoke():? Response
+    public function __invoke(): ?Response
     {
 
         $status = 200;
         try {
-            $shortLink = $this->service->createShortLink($_POST['base_link']);
+            $shortLink = $this->service->createShortLink($this->request->getPost()['base_link']);
             $message = 'Success! Short Link: ' .
                 $this->prepareShortLinkToUser(
-                    $_SERVER['SERVER_NAME'],
                     $shortLink,
-                    $_SERVER['REQUEST_SCHEME']
+                    $this->request->getServerName(),
+                    $this->request->getScheme()
                 );
         } catch (InvalidArgumentException $exception) {
             $message = $exception->getMessage();

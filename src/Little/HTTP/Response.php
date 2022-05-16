@@ -2,7 +2,7 @@
 
 namespace Little\HTTP;
 
-class Response
+class Response implements ResponseInterface
 {
 
     /**

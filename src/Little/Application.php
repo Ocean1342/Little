@@ -2,6 +2,7 @@
 
 namespace Little;
 
+use Little\HTTP\RequestInterface;
 use Little\HTTP\Response;
 use Little\HTTP\Router\Exceptions\BadMethodException;
 use Little\HTTP\Router\Exceptions\RouteNotFoundException;
@@ -11,18 +12,18 @@ use Throwable;
 
 class Application
 {
-    public function handle(): Response
+    public function handle(RequestInterface $request): Response
     {
 
-        $router = new Router();
+        $router = new Router($request);
         $router->registerRoute('/', '\Little\Controllers\HomeController');
         $router->registerRoute('/{shortLink}', '\Little\Controllers\RedirectController');
         $router->registerRoute('/', '\Little\Controllers\StoreController', "POST");
 
         try {
-            return $router->dispatcher();
+            $response = $router->match();
         } catch (NotFoundLinkException|RouteNotFoundException $e) {
-            return new Response(
+            $response = new Response(
                 renderTemplate('404.php'),
                 404
             );
@@ -36,8 +37,12 @@ class Application
                 'message' => 'Something went wrong. Try latter.',
             ]);
 
-            return new Response($content, 500);
+            dump($exception->getMessage());
+            dump($exception->getFile());
+            dump($exception->getLine());
+            $response = new Response($content, 500);
         }
 
+        return $response;
     }
 }

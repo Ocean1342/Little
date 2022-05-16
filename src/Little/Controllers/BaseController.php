@@ -2,6 +2,7 @@
 
 namespace Little\Controllers;
 
+use Little\HTTP\RequestInterface;
 use Little\Services\LinkService;
 
 /**
@@ -14,7 +15,9 @@ class BaseController
     /**
      * @param LinkService $service
      */
-    public function __construct()
+    public function __construct(
+        protected RequestInterface $request
+    )
     {
         $this->service = new LinkService();
     }
