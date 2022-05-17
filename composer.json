@@ -19,8 +19,7 @@
   "minimum-stability": "dev",
   "require": {
     "php": ">=8.0",
-    "ext-pdo": "*",
-    "psr/http-message": "1.0.x-dev"
+    "ext-pdo": "*"
   },
   "scripts": {
     "serve": "@php -S localhost:8000 -t public/",
