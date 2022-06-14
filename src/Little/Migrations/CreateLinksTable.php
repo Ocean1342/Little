@@ -17,10 +17,10 @@ class CreateLinksTable
     {
         $stmt = $this->pdo->query('
             CREATE TABLE IF NOT EXISTS `links` (
-              `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+              `id` int AUTO_INCREMENT PRIMARY KEY,
               `base_link` varchar(1024)  NOT NULL,
-              `short_link` varchar(255)  NOT NULL
-            )
+              `short_link` varchar(255)  NOT NULL UNIQUE
+            );
         ');
         if ($stmt->execute()) {
             echo 'table links created', PHP_EOL;

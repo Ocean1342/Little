@@ -3,6 +3,7 @@
 namespace Little\Controllers;
 
 use InvalidArgumentException;
+use Little\Repositories\Exceptions\DuplicateShortLinkException;
 use Little\Repositories\Exceptions\PDOLinkRepositoryException;
 use Little\HTTP\Response;
 
@@ -38,6 +39,9 @@ class StoreController extends BaseController
         } catch (InvalidArgumentException $exception) {
             $message = $exception->getMessage();
             $status = 400;
+        } catch (DuplicateShortLinkException $exception) {
+            $message = 'An error occurred. Please, try one more time';
+            $status = 500;
         } catch (PDOLinkRepositoryException $exception) {
             $message = 'An error occurred. Please, try latter';
             $status = 500;

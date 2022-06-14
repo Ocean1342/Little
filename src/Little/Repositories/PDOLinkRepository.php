@@ -3,6 +3,7 @@
 namespace Little\Repositories;
 
 use InvalidArgumentException;
+use Little\Repositories\Exceptions\DuplicateShortLinkException;
 use Little\Repositories\Exceptions\NotFoundLinkException;
 use Little\Repositories\Exceptions\PDOLinkRepositoryException;
 use PDO;
@@ -52,6 +53,7 @@ class PDOLinkRepository extends LinkRepositoryAbstract
      * @param string $shortLink
      * @param string $baseLink
      * @return bool
+     * @throws DuplicateShortLinkException
      * @throws PDOLinkRepositoryException
      * @throws InvalidArgumentException
      */
@@ -68,7 +70,13 @@ class PDOLinkRepository extends LinkRepositoryAbstract
         try {
             $res = $stmt->execute();
         } catch (PDOException $exception) {
-            throw new PDOLinkRepositoryException($exception->getMessage());
+
+            if ($exception->getCode() == '23000') {
+                throw new DuplicateShortLinkException($exception->getMessage());
+            } else {
+                throw new PDOLinkRepositoryException($exception->getMessage());
+            }
+
         }
 
 
